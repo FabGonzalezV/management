@@ -1,14 +1,15 @@
 import mongoose from "mongoose";
+import crypto from "crypto"; // Asegúrate de importar el módulo crypto
+
 const UserSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: "user is required",
+    required: "User name is required", // Corrección en el mensaje
   },
-
   email: {
     type: String,
     trim: true,
-    unique: "Email already exists",
+    unique: true, // Corrección en la unicidad
     match: [/.+\@.+\..+/, "Please fill a valid email address"],
     required: "Email is required",
   },
@@ -29,29 +30,29 @@ const UserSchema = new mongoose.Schema({
 });
 
 UserSchema.virtual("password")
-  .set((password) => {
+  .set(function (password) { // Cambio a función normal para acceder a 'this'
     this._password = password;
     this.salt = this.makeSalt();
-    this.hashed_password = this.enctyptPassword(password);
+    this.hashed_password = this.encryptPassword(password); // Cambio de 'enctyptPassword' a 'encryptPassword'
   })
-  .get(() => {
+  .get(function () { // Cambio a función normal para acceder a 'this'
     return this._password;
   });
 
-UserSchema.path("hashed_password").validate((v) => {
-  if (this._password && this._password.lenght < 8) {
-    this.invalidate("password", "password most be at least 8 characters");
+UserSchema.path("hashed_password").validate(function (v) { // Cambio a función normal para acceder a 'this'
+  if (this._password && this._password.length < 8) { // Corrección en 'length'
+    this.invalidate("hashed_password", "Password must be at least 8 characters");
   }
   if (this.isNew && !this._password) {
-    this.invalidate("password", "password is required");
+    this.invalidate("hashed_password", "Password is required");
   }
 });
 
 UserSchema.methods = {
-  authenticate: (plainText) => {
-    return this.enctyptPassword(plainText) === this.hashed_password;
+  authenticate: function (plainText) { // Cambio a función normal para acceder a 'this'
+    return this.encryptPassword(plainText) === this.hashed_password;
   },
-  enctyptPassword: (password) => {
+  encryptPassword: function (password) { // Cambio de 'enctyptPassword' a 'encryptPassword'
     if (!password) return "";
     try {
       return crypto
@@ -59,12 +60,13 @@ UserSchema.methods = {
         .update(password)
         .digest("hex");
     } catch (err) {
-      return console.error(`error encrypt password`);
+      console.error("Error encrypting password:", err.message);
+      return "";
     }
   },
-  makeSalt:()=>{
-    return Math.round((new Date().valueOf()*Math.random()))+''
-  }
+  makeSalt: function () { // Cambio de 'makeSalt' a función normal
+    return Math.round(new Date().valueOf() * Math.random()) + "";
+  },
 };
 
-export default mongoose.model('User', UserSchema);
+export default mongoose.model("User", UserSchema);
