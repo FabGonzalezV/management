@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-18.04 # Especifica Ubuntu 18.04 como sistema operativo
+    runs-on: ubuntu-latest  
 
     steps:
       - name: Checkout Repository
