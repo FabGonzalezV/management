@@ -1,5 +1,5 @@
 name: CI/CD
-
+run-name: ${{ github.actor }} CI/CD testing
 on:
   push:
     branches:
@@ -7,14 +7,14 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-18.04 # Especifica Ubuntu 18.04 como sistema operativo
+    runs-on: ubuntu-latest  
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: '16.20.1' # Especifica tu versión de Node.js aquí
 
