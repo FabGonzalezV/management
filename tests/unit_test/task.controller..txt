@@ -1,0 +1,128 @@
+import Task from './../../server/models/tasks.model'
+import {
+  createTask,
+  getAllTasks,
+  updateTask,
+  deleteTask,
+} from "./../../server/controllers/tasksController";
+ 
+  // Mockear el objeto req, res y next
+  const mockRequest = (body = {}) => ({
+    body,
+  });
+  
+  const mockResponse = () => {
+    const res = {};
+    res.status = jest.fn().mockReturnValue(res);
+    res.json = jest.fn().mockReturnValue(res);
+    return res;
+  };
+  
+  // Pruebas unitarias para createTask
+  describe('createTask', () => {
+    it('debería crear una tarea correctamente', async () => {
+      const req = mockRequest({
+        title: 'Tarea de prueba',
+        description: 'Descripción de la tarea de prueba',
+        priority: 'Alta',
+      });
+      const res = mockResponse();
+  
+      await createTask(req, res);
+  
+      expect(res.status).toHaveBeenCalledWith(201);
+      expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ title: 'Tarea de prueba' }));
+    });
+  
+    it('debería manejar errores al crear una tarea', async () => {
+      const req = mockRequest();
+      const res = mockResponse();
+  
+      // Forzar un error al guardar la tarea
+      Task.prototype.save = jest.fn(() => {
+        throw new Error('Error de prueba');
+      });
+  
+      await createTask(req, res);
+  
+      expect(res.status).toHaveBeenCalledWith(500);
+      expect(res.json).toHaveBeenCalledWith({ error: 'Error al crear la tarea' });
+    });
+  });
+  
+  // Pruebas unitarias para getAllTasks, updateTask y deleteTask
+  describe('getAllTasks, updateTask, deleteTask', () => {
+    it('debería obtener todas las tareas correctamente', async () => {
+      const req = mockRequest();
+      const res = mockResponse();
+  
+      // Mockear la función find del modelo de tarea
+      Task.find = jest.fn().mockReturnValue([]);
+  
+      await getAllTasks(req, res);
+  
+      expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.json).toHaveBeenCalledWith([]);
+    });
+  
+    it('debería actualizar una tarea correctamente', async () => {
+      const req = mockRequest({
+        title: 'Tarea actualizada',
+        description: 'Descripción actualizada',
+        priority: 'Media',
+      });
+      const res = mockResponse();
+  
+      // Mockear la función findByIdAndUpdate del modelo de tarea
+      Task.findByIdAndUpdate = jest.fn().mockReturnValue({ title: 'Tarea actualizada' });
+  
+      await updateTask(req, res);
+  
+      expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ title: 'Tarea actualizada' }));
+    });
+  
+    it('debería manejar errores al actualizar una tarea', async () => {
+      const req = mockRequest();
+      const res = mockResponse();
+  
+      // Forzar un error al actualizar la tarea
+      Task.findByIdAndUpdate = jest.fn(() => {
+        throw new Error('Error de prueba');
+      });
+  
+      await updateTask(req, res);
+  
+      expect(res.status).toHaveBeenCalledWith(500);
+      expect(res.json).toHaveBeenCalledWith({ error: 'Error al actualizar la tarea' });
+    });
+  
+    it('debería eliminar una tarea correctamente', async () => {
+      const req = mockRequest();
+      const res = mockResponse();
+  
+      // Mockear la función findByIdAndDelete del modelo de tarea
+      Task.findByIdAndDelete = jest.fn().mockReturnValue({ message: 'Tarea eliminada con éxito' });
+  
+      await deleteTask(req, res);
+  
+      expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.json).toHaveBeenCalledWith({ message: 'Tarea eliminada con éxito' });
+    });
+  
+    it('debería manejar errores al eliminar una tarea', async () => {
+      const req = mockRequest();
+      const res = mockResponse();
+  
+      // Forzar un error al eliminar la tarea
+      Task.findByIdAndDelete = jest.fn(() => {
+        throw new Error('Error de prueba');
+      });
+  
+      await deleteTask(req, res);
+  
+      expect(res.status).toHaveBeenCalledWith(500);
+      expect(res.json).toHaveBeenCalledWith({ error: 'Error al eliminar la tarea' });
+    });
+  });
+  

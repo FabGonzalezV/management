@@ -56,7 +56,7 @@ describe("User Schema Tests", () => {
     try {
       await user.save();
     } catch (error) {
-      // Deberías esperar que esta prueba pase ahora sin errores
+      
       expect(error.errors.hashed_password).toBeDefined();
       expect(error.errors.hashed_password.message).toBe(
         "Password must be at least 8 characters"

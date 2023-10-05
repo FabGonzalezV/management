@@ -5,7 +5,7 @@
   "main": "./dist/server.generated.js",
   "scripts": {
     "development": "DEBUG=backend:* nodemon",
-    "test": "jest"
+    "test": "jest --detectOpenHandles"
   },
   "keywords": [
     "api",

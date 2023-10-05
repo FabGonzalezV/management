@@ -1,4 +1,4 @@
-const envConfig = require('./tests/env');
+ 
  module.exports={
     moduleFileExtensions: ['js', 'json', 'jsx', 'ts', 'tsx', 'node'],
     testEnvironment: 'node',
@@ -7,7 +7,7 @@ const envConfig = require('./tests/env');
       },
       setupFiles: ['dotenv/config'],
 
-globals: {
-    'import.meta.env': envConfig,
-  },
+// globals: {
+//     'import.meta.env': envConfig,
+//   },
 }
