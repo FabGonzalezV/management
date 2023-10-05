@@ -1,7 +1,8 @@
 import mongoose from "mongoose";
+import dotenv from 'dotenv';
+dotenv.config();
 
- const uri = process.env.mongoUriAtlas;
-
+const uri = process.env.mongoUriAtlas;
 const connectDB = async () => {
   try {
     await mongoose.connect(uri, {
