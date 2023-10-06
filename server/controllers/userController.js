@@ -1,7 +1,5 @@
-import User from './../models/user.model';
-
- 
-
+import User from "./../models/user.model";
+import extend from 'lodash/extend'
 // Controlador para crear un nuevo usuario
 export const createUser = async (req, res) => {
   try {
@@ -16,7 +14,7 @@ export const createUser = async (req, res) => {
 // Controlador para obtener todos los usuarios
 export const getAllUsers = async (req, res) => {
   try {
-    const users = await User.find();
+    const users = await User.find().select("name email updatedd created");
     return res.status(200).json(users);
   } catch (error) {
     return res.status(500).json({ error: error.message });
@@ -24,28 +22,33 @@ export const getAllUsers = async (req, res) => {
 };
 
 // Controlador para obtener un usuario por su ID
-export const getUserById = async (req, res) => {
+export const getUserById = async (req, res, next, id) => {
   try {
-    const user = await User.findById(req.params.userId);
+    const user = await User.findById(id);
     if (!user) {
-      return res.status(404).json({ error: 'User not found' });
+      return res.status(404).json({ error: "User not found" });
     }
-    return res.status(200).json(user);
+    req.profile = user;
+    next();
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }
 };
-
+export const read = (req, res) => {
+  req.profile.hashed_password = undefined;
+  req.profile.salt = undefined;
+  return res.json(req.profile);
+};
 // Controlador para actualizar un usuario por su ID
 export const updateUserById = async (req, res) => {
   try {
-    const user = await User.findByIdAndUpdate(req.params.userId, req.body, {
-      new: true, // Devuelve el usuario actualizado en la respuesta
-    });
-    if (!user) {
-      return res.status(404).json({ error: 'User not found' });
-    }
-    return res.status(200).json(user);
+    let user = req.profile;
+    user = extend(user, req.body);
+    user.updated = Date.now();
+    await user.save();
+    user.hashed_password = undefined;
+    user.salt = undefined;
+    res.json(user);
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }
@@ -54,11 +57,12 @@ export const updateUserById = async (req, res) => {
 // Controlador para eliminar un usuario por su ID
 export const deleteUserById = async (req, res) => {
   try {
-    const user = await User.findByIdAndDelete(req.params.userId);
-    if (!user) {
-      return res.status(404).json({ error: 'User not found' });
-    }
-    return res.status(204).send(); // 204 significa "No Content"
+    let user  = req.profile;
+    let deleteUser = await user.remove();
+    deleteUser.hashed_password = undefined;
+    deleteUser.salt = undefined;
+    res.json(deleteUser);
+    
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }

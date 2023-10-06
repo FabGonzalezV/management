@@ -16,7 +16,7 @@ const connectDB = async () => {
     );
     console.error(error);
 
-    // You can add specific error handling for certain error types, for example:
+    
     if (error.name === "MongoNetworkError") {
       console.error("Failed to connect to MongoDB network.");
     } else if (error.name === "MongoTimeoutError") {

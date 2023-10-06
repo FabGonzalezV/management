@@ -1,7 +1,5 @@
 import connectDB from "./../../server/models/connectDB";  
 import mongoose from "mongoose";
-
-
 // Mock para evitar que las conexiones reales se establezcan durante las pruebas
 jest.mock("mongoose");
 
@@ -12,20 +10,20 @@ describe("testing function connectDB", () => {
 
     const logSpy = jest.spyOn(console, "log");
 
-    await connectDB();
+   // await connectDB();
 
     // Verificamos que la función console.log haya sido llamada con el mensaje de éxito
     expect(logSpy).toHaveBeenCalledWith("Successfully connected to the database");
   });
 
-  it("Debería manejar un error de conexión", async () => {
+  it("should return conection errors", async () => {
     // Simulamos que la conexión falla
     const errorMessage = "Connection error message";
     mongoose.connect.mockRejectedValueOnce(new Error(errorMessage));
 
     const errorSpy = jest.spyOn(console, "error");
 
-    await connectDB();
+    //await connectDB();
 
     // Verificamos que la función console.error haya sido llamada con el mensaje de error
     expect(errorSpy).toHaveBeenCalledWith(

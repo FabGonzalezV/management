@@ -1,5 +1,5 @@
 import mongoose, { connect } from "mongoose";
-import User from "./../../server/models/user.model"; // Asegúrate de que la ruta sea correcta
+import User from "./../../server/models/user.model";  
 import connectDB from "./../../server/models/connectDB";
 
 describe("User Schema Tests", () => {
