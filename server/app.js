@@ -9,7 +9,7 @@ import morgan from "morgan";
 import taskRoutes from "./routes/tasks.routes";
 import userRoutes from "./routes/user.routes";
 import authRoutes from "./routes/auth.routes";
-
+import teamRoutes from './routes/team.routes';
 const CURRENT_WORKINK_DIRECTORY = process.cwd();
 const app = express();
 app.use(express.json());
@@ -22,6 +22,7 @@ app.use(morgan("dev"));
 app.use("/", authRoutes);
 app.use("/", userRoutes);
 app.use("/", taskRoutes);
+app.use("/", teamRoutes) ;
 
 app.get("/", (req, res) => {
   res.status(200).send({ request: "success" });

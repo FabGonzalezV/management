@@ -12,7 +12,7 @@ export const createUser = async (req, res) => {
 };
 
 // Controlador para obtener todos los usuarios
-export const getAllUsers = async (req, res) => {
+export const listUsers = async (req, res) => {
   try {
     const users = await User.find().select("name email updatedd created");
     return res.status(200).json(users);
@@ -22,8 +22,11 @@ export const getAllUsers = async (req, res) => {
 };
 
 // Controlador para obtener un usuario por su ID
-export const getUserById = async (req, res, next, id) => {
+export const getUserById = async (req, res, next, id ) => {
   try {
+    
+    
+
     const user = await User.findById(id);
     if (!user) {
       return res.status(404).json({ error: "User not found" });
@@ -34,7 +37,7 @@ export const getUserById = async (req, res, next, id) => {
     return res.status(500).json({ error: error.message });
   }
 };
-export const read = (req, res) => {
+export const readUser = (req, res) => {
   req.profile.hashed_password = undefined;
   req.profile.salt = undefined;
   return res.json(req.profile);

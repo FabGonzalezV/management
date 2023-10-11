@@ -27,21 +27,31 @@ const UserSchema = new mongoose.Schema({
     data: Buffer,
     contentType: String,
   },
+  team: [{type: mongoose.Schema.Types.ObjectId, ref:"Team"}],
+   
+   
 });
 
 UserSchema.virtual("password")
-  .set(function (password) { // Cambio a función normal para acceder a 'this'
+  .set(function (password) {
+    // Cambio a función normal para acceder a 'this'
     this._password = password;
     this.salt = this.makeSalt();
     this.hashed_password = this.encryptPassword(password); // Cambio de 'enctyptPassword' a 'encryptPassword'
   })
-  .get(function () { // Cambio a función normal para acceder a 'this'
+  .get(function () {
+    // Cambio a función normal para acceder a 'this'
     return this._password;
   });
 
-UserSchema.path("hashed_password").validate(function (v) { // Cambio a función normal para acceder a 'this'
-  if (this._password && this._password.length < 8) { // Corrección en 'length'
-    this.invalidate("hashed_password", "Password must be at least 8 characters");
+UserSchema.path("hashed_password").validate(function (v) {
+  // Cambio a función normal para acceder a 'this'
+  if (this._password && this._password.length < 8) {
+    // Corrección en 'length'
+    this.invalidate(
+      "hashed_password",
+      "Password must be at least 8 characters"
+    );
   }
   if (this.isNew && !this._password) {
     this.invalidate("hashed_password", "Password is required");
@@ -49,10 +59,12 @@ UserSchema.path("hashed_password").validate(function (v) { // Cambio a función 
 });
 
 UserSchema.methods = {
-  authenticate: function (plainText) { // Cambio a función normal para acceder a 'this'
+  authenticate: function (plainText) {
+    // Cambio a función normal para acceder a 'this'
     return this.encryptPassword(plainText) === this.hashed_password;
   },
-  encryptPassword: function (password) { // Cambio de 'enctyptPassword' a 'encryptPassword'
+  encryptPassword: function (password) {
+    // Cambio de 'enctyptPassword' a 'encryptPassword'
     if (!password) return "";
     try {
       return crypto
@@ -64,7 +76,8 @@ UserSchema.methods = {
       return "";
     }
   },
-  makeSalt: function () { // Cambio de 'makeSalt' a función normal
+  makeSalt: function () {
+    // Cambio de 'makeSalt' a función normal
     return Math.round(new Date().valueOf() * Math.random()) + "";
   },
 };

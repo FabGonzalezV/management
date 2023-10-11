@@ -1,4 +1,6 @@
 import mongoose from "mongoose";
+
+
 const TaskSchema = new mongoose.Schema({
   title: {
     type: String,
@@ -17,6 +19,8 @@ const TaskSchema = new mongoose.Schema({
   updated: Date,
 
   priority: { type: String },
+  completedBy: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+  createdBy: {type:mongoose.Schema.Types.ObjectId, ref:"User"},
 });
- 
-export  default mongoose.model('Tasks', TaskSchema);
+
+export default mongoose.model("Tasks", TaskSchema);

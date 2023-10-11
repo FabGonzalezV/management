@@ -8,4 +8,3 @@ The goal is to create a task management system with the following features:
 - Update an existing task's information
 - Delete a specific task from database
 
- 
